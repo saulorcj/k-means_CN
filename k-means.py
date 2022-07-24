@@ -3,8 +3,7 @@ import math
 
 
 def k_means1D(n_clusters, data):
-    points_by_center = None
-
+    centers = None
     data.sort()
 
     # Evitando que haja centróides repetidos
@@ -19,31 +18,30 @@ def k_means1D(n_clusters, data):
 
     while list_before != list_after:
         list_before = list_after
-        points_by_center = dict(zip(cluster_centers, [set() for _ in range(n_clusters)]))
+        centers = [set() for _ in range(n_clusters)]
 
         # Separando os pontos por centróide mais próximo
         for point in data:
             min_dist = np.inf
             min_center = None
-            for center in points_by_center:
+            for i_center, center in enumerate(cluster_centers):
                 dist = abs(point - center)
                 if dist < min_dist:
                     min_dist = dist
-                    min_center = center
+                    min_center = i_center
 
-            points_by_center[min_center].add(point)
+            centers[min_center].add(point)
 
         # Coletando a média dos pontos de cada centróide
         list_after = []
-        for center in points_by_center:
-            sum_points = sum(points_by_center[center])
-            qtd_points = len(points_by_center[center])
+        for center in centers:
+            qtd_points = len(center)
             if qtd_points:
-                list_after.append(round(sum_points / qtd_points, 5))
+                list_after.append(round(sum(center) / qtd_points, 5))
             else:
                 list_after.append(None)
 
-    return points_by_center
+    return centers
 
 def geraPonto(x_lim, y_lim):
   eixo_x = np.random.randint(x_lim[0], x_lim[1])
