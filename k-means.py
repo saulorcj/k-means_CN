@@ -1,61 +1,6 @@
 import numpy as np
 
 
-def k_means_1d(n_clusters, data):
-    """
-    :param n_clusters: número de clusters que o usuário deseja obter
-    :param data: array de pontos de 1 dimensão
-    :return: lista de centroides, lista dos conjuntos de pontos de acordo com os centroides
-    """
-    centers = None
-    data.sort()
-
-    # Evitando que haja centroides repetidos
-    cluster_centers = set()
-    while len(cluster_centers) != n_clusters:
-        cluster_centers = set([data[np.random.randint(0, data.size)] for _ in range(n_clusters)])
-    cluster_centers = np.array(list(cluster_centers))
-
-    # Listas para saber se as médias dos pontos mudaram
-    list_before = None
-    list_after = []
-
-    while list_before != list_after:
-        list_before = list_after
-        centers = [set() for _ in range(n_clusters)]
-
-        # Separando os pontos por centroide mais próximo
-        for point in data:
-            min_dist = np.inf
-            min_center = None
-            for i_center, center in enumerate(cluster_centers):
-                dist = abs(point - center)
-                if dist < min_dist:
-                    min_dist = dist
-                    min_center = i_center
-
-            centers[min_center].add(point)
-
-        # Atualizando os novos centroides
-        list_after = []
-        for center in centers:
-            qtd_points = len(center)
-            if qtd_points:
-                list_after.append(round(sum(center) / qtd_points, 5))
-            else:
-                list_after.append(None)
-        cluster_centers = list_after
-
-    # TODO: mudar return para dicionário de arrays
-    return list_after, centers
-
-
-def geraPonto(x_lim, y_lim):
-    eixo_x = np.random.randint(x_lim[0], x_lim[1])
-    eixo_y = np.random.randint(y_lim[0], y_lim[1])
-    return [eixo_x, eixo_y]
-
-
 def calcula_dist(p1, p2):
     """
     :param p1: primeiro ponto (float x, float y)
@@ -76,62 +21,105 @@ def calculaDist3D(p1, p2):
     return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2 + (p1[2] - p2[2])**2) ** (1 / 2)
 
 
-def k_means2D(n_clusters, data):
+def k_means_1d(n_clusters, data):
+    """
+    :param n_clusters: número de clusters que o usuário deseja obter
+    :param data: array de pontos de 1 dimensão
+    :return: lista de centroides, lista dos conjuntos de pontos de acordo com os centroides
+    """
+    data.sort()
+
+    # Evitando que haja centroides repetidos
+    cluster_centers = set()
+    while len(cluster_centers) != n_clusters:
+        cluster_centers = set([data[np.random.randint(0, data.size)] for _ in range(n_clusters)])
+    cluster_centers = np.array(list(cluster_centers))
+
+    # Listas para saber se as médias dos pontos mudaram
+    centers_before = None
+    centers_after = []
+    centers = None
+
+    while centers_before != centers_after:
+        centers_before = centers_after
+        centers = dict(zip(cluster_centers, [set() for _ in range(n_clusters)]))
+
+        # Separando os pontos por centroide mais próximo
+        for point in data:
+            min_dist = np.inf
+            min_center = None
+            for i_center, center in enumerate(cluster_centers):
+                dist = abs(point - center)
+                if dist < min_dist:
+                    min_dist = dist
+                    min_center = center
+            centers[min_center].add(point)
+
+        # Atualizando os novos centroides
+        centers_after = []
+        for center in centers:
+            qtd_points = len(centers[center])
+            if qtd_points:
+                centers_after.append(round(sum(centers[center]) / qtd_points, 5))
+            else:
+                centers_after.append(None)
+        cluster_centers = centers_after
+
+    return centers
+
+
+def k_means_2d(n_clusters, data):
     pontos_X = data[:, 0]
     pontos_Y = data[:, 1]
 
     # Array de centroides aleatorios
-    centroides = np.array([geraPonto((min(pontos_X), max(pontos_X)),
-                                     (min(pontos_Y), max(pontos_Y)))
-                           for _ in range(n_clusters)])
-    print("centroides inicio", centroides)
-    # Lista dos centroides mais próximos por ponto
-    list_before = None
-    list_after = []
+    cluster_centers = set()
+    while len(cluster_centers) != n_clusters:
+        cluster_centers = set([tuple(data[np.random.randint(0, data.shape[0])]) for _ in range(n_clusters)])
+    cluster_centers = tuple(cluster_centers)
 
-    while list_before != list_after:
-        list_before = list_after
+    # Listas para saber se as médias dos pontos mudaram
+    centers_before = None
+    centers_after = []
+    centers = None
 
-        list_after = []
-        # Verificando a qual dos novos centroides os pontos pertecncem agora
+    while centers_before != centers_after:
+        centers_before = centers_after
+        centers = dict(zip(cluster_centers, [set() for _ in range(n_clusters)]))
+
+        centers_after = []
+        # Verificando a qual dos novos centroides os pontos pertencem agora
         for ponto in data:
+            min_center = None
+            min_dist = np.inf
             cent_min = 0
-            dist_min = np.inf
-            for i, centroide in enumerate(centroides):
-                new_dist = calcula_dist(ponto, centroide)
-                if new_dist < dist_min:
-                    cent_min = i
-                    dist_min = new_dist
-            list_after.append(cent_min)
+            for i_center, center in enumerate(cluster_centers):
+                new_dist = calcula_dist(ponto, center)
+                if new_dist < min_dist:
+                    min_center = center
+                    cent_min = i_center
+                    min_dist = new_dist
+            centers_after.append(cent_min)
+            centers[min_center].add(tuple(ponto))
 
         # Inicializando arrays locais que vão guardar as somas dos eixos dos
         # centroides e a quantidade de vezes que aparecem
-        cent_x = np.zeros(len(centroides))
-        cent_y = np.zeros(len(centroides))
-        qtde_cent = np.zeros(len(centroides))
+        cent_x = np.zeros(len(cluster_centers))
+        cent_y = np.zeros(len(cluster_centers))
+        qtde_cent = np.zeros(len(cluster_centers))
 
         # Somando nos eixos dos centroides e add um para cada vez que aparece na
         # lista
-        for i, n in enumerate(list_after):
+        for i, n in enumerate(centers_after):
             cent_x[n] += pontos_X[i]
             cent_y[n] += pontos_Y[i]
             qtde_cent[n] += 1
 
         # Atualizando os novos centroides
-        print("centroides", centroides)
-        print("cent_x", cent_x)
-        print("cent_y", cent_y)
-        print("qtde", qtde_cent)
-        for k in range(len(centroides)):
-            qtde = qtde_cent[k]
-            centroides[k] = [round(cent_x[k] / qtde_cent[k], 5), round(cent_y[k] / qtde_cent[k], 5)]
-            """if qtde:
-                centroides[k] = [round(cent_x[k] / qtde_cent[k], 5), round(cent_y[k] / qtde_cent[k], 5)]
-            else:
-                # TODO: dar valor para a posição onde qtde é igual a zero
-                continue"""
+        for k in range(len(cluster_centers)):
+            cluster_centers[k] = [round(cent_x[k] / qtde_cent[k], 5), round(cent_y[k] / qtde_cent[k], 5)]
 
-    return list_after, centroides
+    return centers_after, cluster_centers
 
 
 def k_means3D(n_clusters, data):
@@ -212,14 +200,16 @@ def k_means(n_clusters, data):
     if len(data.shape) == 1:
         return k_means_1d(n_clusters, data)
     elif data.shape[1] == 2:
-        return k_means2D(n_clusters, data)
+        return k_means_2d(n_clusters, data)
     elif data.shape[1] == 3:
         return k_means3D(n_clusters, data)
     else:
         return None
         
 
-resultado = k_means(5, np.array([1, 2, 3, 4, 10, 15, 20, 100, 155, 200]))
-# resultado = k_means(3, np.array([[1, 2], [7, 11], [100, 1], [200, 4], [0, 0], [27, 33]]))
-
-print(resultado)
+resultado1 = k_means(2, np.array([1, 2, 3, 4, 10, 15, 20, 100, 155, 200]))
+resultado2 = k_means(3, np.array([[1, 2], [7, 11], [100, 1], [200, 4], [0, 0], [27, 33]]))
+#x = np.array([[1, 2], [7, 11], [100, 1], [200, 4], [0, 0], [27, 33]])
+#print(x.shape[0])
+print(resultado1)
+print(resultado2)
