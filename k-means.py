@@ -48,7 +48,7 @@ def k_means_1d(n_clusters, data):
         for point in data:
             min_dist = np.inf
             min_center = None
-            for i_center, center in enumerate(cluster_centers):
+            for center in cluster_centers:
                 dist = abs(point - center)
                 if dist < min_dist:
                     min_dist = dist
@@ -69,9 +69,6 @@ def k_means_1d(n_clusters, data):
 
 
 def k_means_2d(n_clusters, data):
-    pontos_X = data[:, 0]
-    pontos_Y = data[:, 1]
-
     # Array de centroides aleatorios
     cluster_centers = set()
     while len(cluster_centers) != n_clusters:
@@ -87,42 +84,31 @@ def k_means_2d(n_clusters, data):
         centers_before = centers_after
         centers = dict(zip(cluster_centers, [set() for _ in range(n_clusters)]))
 
-        centers_after = []
         # Verificando a qual dos novos centroides os pontos pertencem agora
         for ponto in data:
             min_center = None
             min_dist = np.inf
-            cent_min = 0
             for i_center, center in enumerate(cluster_centers):
-                new_dist = calcula_dist(ponto, center)
-                if new_dist < min_dist:
+                dist = calcula_dist(ponto, center)
+                if dist < min_dist:
                     min_center = center
-                    cent_min = i_center
-                    min_dist = new_dist
-            centers_after.append(cent_min)
+                    min_dist = dist
             centers[min_center].add(tuple(ponto))
 
-        # Inicializando arrays locais que vão guardar as somas dos eixos dos
-        # centroides e a quantidade de vezes que aparecem
-        cent_x = np.zeros(len(cluster_centers))
-        cent_y = np.zeros(len(cluster_centers))
-        qtde_cent = np.zeros(len(cluster_centers))
+        centers_after = []
+        for center in centers:
+            soma_x = sum([center[0] for center in centers[center]])
+            soma_y = sum([center[1] for center in centers[center]])
+            media_x = round(soma_x / len(centers[center]), 5)
+            media_y = round(soma_y / len(centers[center]), 5)
+            centers_after.append((media_x, media_y))
 
-        # Somando nos eixos dos centroides e add um para cada vez que aparece na
-        # lista
-        for i, n in enumerate(centers_after):
-            cent_x[n] += pontos_X[i]
-            cent_y[n] += pontos_Y[i]
-            qtde_cent[n] += 1
+        cluster_centers = centers_after
 
-        # Atualizando os novos centroides
-        for k in range(len(cluster_centers)):
-            cluster_centers[k] = [round(cent_x[k] / qtde_cent[k], 5), round(cent_y[k] / qtde_cent[k], 5)]
-
-    return centers_after, cluster_centers
+    return centers
 
 
-def k_means3D(n_clusters, data):
+def k_means_3d(n_clusters, data):
     qtd_pontos = data.shape[0]
     pontos_X = data[:, 0]
     pontos_Y = data[:, 1]
@@ -202,14 +188,14 @@ def k_means(n_clusters, data):
     elif data.shape[1] == 2:
         return k_means_2d(n_clusters, data)
     elif data.shape[1] == 3:
-        return k_means3D(n_clusters, data)
+        return k_means_3d(n_clusters, data)
     else:
         return None
         
 
 resultado1 = k_means(2, np.array([1, 2, 3, 4, 10, 15, 20, 100, 155, 200]))
-resultado2 = k_means(3, np.array([[1, 2], [7, 11], [100, 1], [200, 4], [0, 0], [27, 33]]))
+print(resultado1)
+resultado2 = k_means(2, np.array([[1, 2], [7, 11], [100, 1], [200, 4], [0, 0], [27, 33]]))
 #x = np.array([[1, 2], [7, 11], [100, 1], [200, 4], [0, 0], [27, 33]])
 #print(x.shape[0])
-print(resultado1)
 print(resultado2)
