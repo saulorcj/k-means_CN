@@ -46,13 +46,14 @@ def k_means1D(n_clusters, data):
 
 def k_means(n_clusters, data):
     if len(data.shape) == 1:
-        print(k_means1D(n_clusters, data))
+        return k_means1D(n_clusters, data)
     elif data.shape[1] == 2:
         pass
     elif data.shape[1] == 3:
         pass
     else:
-        print("erro")
+        return None
         
 
-k_means(3, np.array([1, 2, 3, 4, 10, 15, 20, 100, 155, 200]))
+resultado = k_means(3, np.array([1, 2, 3, 4, 10, 15, 20, 100, 155, 200]))
+print(resultado)
