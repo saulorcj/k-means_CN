@@ -36,7 +36,7 @@ def k_means_1d(n_clusters, data):
 
             centers[min_center].add(point)
 
-        # Coletando a média dos pontos de cada centroide
+        # Atualizando os novos centroides
         list_after = []
         for center in centers:
             qtd_points = len(center)
@@ -79,60 +79,48 @@ def k_means2D(n_clusters, data):
     pontos_X = data[:, 0]
     pontos_Y = data[:, 1]
 
+    # Array de centroides aleatorios
     centroides = np.array([geraPonto((min(pontos_X), max(pontos_X)),
                                      (min(pontos_Y), max(pontos_Y)))
                            for _ in range(n_clusters)])
-    # Lista dos centroides mais próximos
-    lista_lnk = []
     print("centroides", centroides)
-    for ponto in data:
-        cent_min = 0
-        dist_min = np.inf
-
-        for i, centroide in enumerate(centroides):
-            new_dist = calcula_dist(ponto, centroide)
-            if new_dist < dist_min:
-                cent_min = i
-                dist_min = new_dist
-        lista_lnk.append(cent_min)
-    print("lista_lnk", lista_lnk)
+    # Lista dos centroides mais próximos por ponto
+    lista_posterior = []
     lista_anterior = None
 
-    while lista_anterior != lista_lnk:
-        lista_anterior = lista_lnk
+    while lista_anterior != lista_posterior:
+        lista_anterior = lista_posterior
 
-        # Inicializando arrays locais qeu vão guardar as soma dos eixos dos
-        # centroides e a qauntidade de vezes que aparecem
+        lista_posterior = []
+        # Verificando a qual dos novos centroides os pontos pertecncem agora
+        for ponto in data:
+            cent_min = 0
+            dist_min = np.inf
+            for i, centroide in enumerate(centroides):
+                new_dist = calcula_dist(ponto, centroide)
+                if new_dist < dist_min:
+                    cent_min = i
+                    dist_min = new_dist
+            lista_posterior.append(cent_min)
+
+        # Inicializando arrays locais que vão guardar as somas dos eixos dos
+        # centroides e a quantidade de vezes que aparecem
         cent_x = np.zeros(len(centroides))
         cent_y = np.zeros(len(centroides))
         qtde_cent = np.zeros(len(centroides))
 
         # Somando nos eixos dos centroides e add um para cada vez que aparece na
         # lista
-        for i,n in enumerate(lista_lnk):
+        for i, n in enumerate(lista_posterior):
             cent_x[n] += pontos_X[i]
             cent_y[n] += pontos_Y[i]
             qtde_cent[n] += 1
 
-        # Atualizando os novo centroides
+        # Atualizando os novos centroides
         for k in range(len(centroides)):
             centroides[k] = [round(cent_x[k] / qtde_cent[k], 5), round(cent_y[k] / qtde_cent[k], 5)]
 
-        lista_lnk = []
-        # Verificando a qual dos novos centroides os pontos pertecncem agora
-        for i,ponto in enumerate(data):
-            cent = 0
-            dist = calcula_dist(ponto, centroides[0])
-
-            for k in range(1,len(centroides)):
-                new_dist = calcula_dist(ponto, centroides[k])
-                if new_dist < dist:
-                    cent = k
-                    dist = new_dist
-
-            lista_lnk.append(cent)
-
-    return lista_lnk, centroides
+    return lista_posterior, centroides
 
 
 def k_means3D(n_clusters, data):
