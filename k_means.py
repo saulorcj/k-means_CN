@@ -196,6 +196,4 @@ def k_means(n_clusters, data):
 resultado1 = k_means(2, np.array([1, 2, 3, 4, 10, 15, 20, 100, 155, 200]))
 print(resultado1)
 resultado2 = k_means(2, np.array([[1, 2], [7, 11], [100, 1], [200, 4], [0, 0], [27, 33]]))
-#x = np.array([[1, 2], [7, 11], [100, 1], [200, 4], [0, 0], [27, 33]])
-#print(x.shape[0])
 print(resultado2)
