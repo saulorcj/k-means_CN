@@ -83,15 +83,15 @@ def k_means2D(n_clusters, data):
     centroides = np.array([geraPonto((min(pontos_X), max(pontos_X)),
                                      (min(pontos_Y), max(pontos_Y)))
                            for _ in range(n_clusters)])
-    print("centroides", centroides)
+    print("centroides inicio", centroides)
     # Lista dos centroides mais próximos por ponto
-    lista_posterior = []
-    lista_anterior = None
+    list_before = None
+    list_after = []
 
-    while lista_anterior != lista_posterior:
-        lista_anterior = lista_posterior
+    while list_before != list_after:
+        list_before = list_after
 
-        lista_posterior = []
+        list_after = []
         # Verificando a qual dos novos centroides os pontos pertecncem agora
         for ponto in data:
             cent_min = 0
@@ -101,7 +101,7 @@ def k_means2D(n_clusters, data):
                 if new_dist < dist_min:
                     cent_min = i
                     dist_min = new_dist
-            lista_posterior.append(cent_min)
+            list_after.append(cent_min)
 
         # Inicializando arrays locais que vão guardar as somas dos eixos dos
         # centroides e a quantidade de vezes que aparecem
@@ -111,16 +111,25 @@ def k_means2D(n_clusters, data):
 
         # Somando nos eixos dos centroides e add um para cada vez que aparece na
         # lista
-        for i, n in enumerate(lista_posterior):
+        for i, n in enumerate(list_after):
             cent_x[n] += pontos_X[i]
             cent_y[n] += pontos_Y[i]
             qtde_cent[n] += 1
 
         # Atualizando os novos centroides
+        print("centroides", centroides)
+        print("cent_x", cent_x)
+        print("cent_y", cent_y)
+        print("qtde", qtde_cent)
         for k in range(len(centroides)):
-            centroides[k] = [round(cent_x[k] / qtde_cent[k], 5), round(cent_y[k] / qtde_cent[k], 5)]
+            qtde = qtde_cent[k]
+            if qtde:
+                centroides[k] = [round(cent_x[k] / qtde_cent[k], 5), round(cent_y[k] / qtde_cent[k], 5)]
+            else:
+                # TODO: dar valor para a posição onde qtde é igual a zero
+                continue
 
-    return lista_posterior, centroides
+    return list_after, centroides
 
 
 def k_means3D(n_clusters, data):
