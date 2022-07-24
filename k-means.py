@@ -1,17 +1,17 @@
-import enum
 import numpy as np
 
+
 def k_means1D(n_clusters, data):
-    data = np.sort(data)
+    data.sort()
 
-    min = data[0]
-    max = data[data.size - 1]
+    cluster_centers = set()
+    while len(cluster_centers) != 2:
+        cluster_centers = set([np.random.randint(data[0], data[data.size - 1]) for _ in range(n_clusters)])
+    cluster_centers = np.array(cluster_centers)
 
-    centroides = np.array([np.random.randint(min, max) for _ in range(n_clusters)])
-    lista_anterior  = list(centroide)
-    lista = []
+    lista_anterior = None
+    lista_atual = []
 
-    #Consertar erro
     dicionario = dict(((centroide, set()) for centroide in centroides))
     print(dicionario)
 
@@ -29,8 +29,8 @@ def k_means1D(n_clusters, data):
     for k in dicionario:
         lista.append(sum([data[index] for index in dicionario[k]]) / len(dicionario[k]))
     
-
-    while(lista_anterior != lista):
+    while lista_anterior != lista:
+        pass
 
     for k in dicionario:
         lista.append(sum([data[index] for index in dicionario[k]]) / len(dicionario[k]))
