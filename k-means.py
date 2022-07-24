@@ -13,7 +13,7 @@ def k_means_1d(n_clusters, data):
     # Evitando que haja centroides repetidos
     cluster_centers = set()
     while len(cluster_centers) != n_clusters:
-        cluster_centers = set([np.random.randint(data[0], data[data.size - 1]) for _ in range(n_clusters)])
+        cluster_centers = set([data[np.random.randint(0, data.size)] for _ in range(n_clusters)])
     cluster_centers = np.array(list(cluster_centers))
 
     # Listas para saber se as médias dos pontos mudaram
@@ -44,6 +44,7 @@ def k_means_1d(n_clusters, data):
                 list_after.append(round(sum(center) / qtd_points, 5))
             else:
                 list_after.append(None)
+        cluster_centers = list_after
 
     # TODO: mudar return para dicionário de arrays
     return list_after, centers
@@ -123,11 +124,12 @@ def k_means2D(n_clusters, data):
         print("qtde", qtde_cent)
         for k in range(len(centroides)):
             qtde = qtde_cent[k]
-            if qtde:
+            centroides[k] = [round(cent_x[k] / qtde_cent[k], 5), round(cent_y[k] / qtde_cent[k], 5)]
+            """if qtde:
                 centroides[k] = [round(cent_x[k] / qtde_cent[k], 5), round(cent_y[k] / qtde_cent[k], 5)]
             else:
                 # TODO: dar valor para a posição onde qtde é igual a zero
-                continue
+                continue"""
 
     return list_after, centroides
 
@@ -217,7 +219,7 @@ def k_means(n_clusters, data):
         return None
         
 
-# resultado = k_means(3, np.array([1, 2, 3, 4, 10, 15, 20, 100, 155, 200]))
-resultado = k_means(3, np.array([[1, 2], [7, 11], [100, 1], [200, 4], [0, 0], [27, 33]]))
+resultado = k_means(5, np.array([1, 2, 3, 4, 10, 15, 20, 100, 155, 200]))
+# resultado = k_means(3, np.array([[1, 2], [7, 11], [100, 1], [200, 4], [0, 0], [27, 33]]))
 
 print(resultado)
