@@ -20,7 +20,7 @@ def k_means1D(n_clusters, data):
         points_by_center = dict(zip(cluster_centers, [set() for _ in range(n_clusters)]))
 
         # Separando os pontos por centróide mais próximo
-        for i, point in enumerate(data):
+        for point in data:
             min_dist = np.inf
             min_center = None
             for center in points_by_center:
@@ -29,12 +29,12 @@ def k_means1D(n_clusters, data):
                     min_dist = dist
                     min_center = center
 
-            points_by_center[min_center].add(i)
+            points_by_center[min_center].add(point)
 
         # Coletando a média dos pontos de cada centróide
         lista_atual = []
         for center in points_by_center:
-            sum_points = sum([data[index] for index in points_by_center[center]])
+            sum_points = sum(points_by_center[center])
             qtd_points = len(points_by_center[center])
             if qtd_points:
                 lista_atual.append(round(sum_points / qtd_points, 5))
