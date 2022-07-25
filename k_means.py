@@ -1,4 +1,3 @@
-import numpy
 import numpy as np
 
 
@@ -8,7 +7,7 @@ def calcula_dist(p1, p2):
     :param p2: segundo ponto
     :return: distância entre o primeiro e segundo ponto
     """
-    if type(p1) == numpy.int64:
+    if type(p1) == np.int64:
         return abs(p1 - p2)
     elif p1.shape[0] == 2:
         return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** (1 / 2)
