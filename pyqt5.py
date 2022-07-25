@@ -28,12 +28,9 @@ class App(QWidget):
 
             data = df.iloc[:,[5,7]].to_numpy()
 
-            a, b = k_means(d2, data)
+            result = k_means(d2, data)
             
-            plt.grid("True")
-            plt.scatter(data[:,0], data[:,1], c = a)
-            plt.scatter(b[:,0], b[:,1], s = 70, c = 'red')
-            plt.show()
+            plotar(data, result)
 
 
 if __name__=='__main__':

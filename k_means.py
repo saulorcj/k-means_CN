@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -19,7 +20,7 @@ def k_means(n_clusters, data):
     """
     :param n_clusters: número de clusters
     :param data: dados
-    :return: dicionário onde a chave é o centróide e o valor associado os pontos próximos a ele
+    :return: dicionário onde a chave é o centroide e o valor associado os pontos próximos a ele
     """
 
     # Determinando a dimensão do array
@@ -79,11 +80,42 @@ def k_means(n_clusters, data):
 
         cluster_centers = tuple(centers_after)
     return centers
-        
 
-# np.array([1, 2, 3, 4, 10, 15, 20, 100, 155, 200])
-# np.array([[1, 2], [7, 11], [100, 1], [200, 4], [0, 0], [27, 33]])
-# np.array([[1, 2, 100], [7, 11, 94], [100, 1, 16], [200, 4, 10], [0, 0, 3], [27, 33, 0]])
 
-resultado4 = k_means(2, np.array([[1, 2, 100], [7, 11, 94], [100, 1, 16], [200, 4, 10], [0, 0, 3], [27, 33, 0]]))
+def plotar(data, result):
+    if type(list(list(result.values())[0])[0]) == np.int64:
+        plt.hlines(1, 1, max(data) + 1)
+        plt.xlim(0, max(data) + 1)
+        plt.ylim(0.5, 1.5)
+
+        for item in result:
+            lista = list(result[item])
+            y = np.ones(np.shape(lista))
+            plt.plot(lista, y, '|', ms=40)
+        plt.axis('off')
+        plt.show()
+    else:
+        plt.figure(figsize=(12, 12))
+        if data.shape[1] == 3:
+            ax = plt.axes(projection='3d')
+        for item in result:
+            array = np.array(list(result[item]))
+            if array.shape[1] == 2:
+                plt.scatter(array[:, 0], array[:, 1])
+            else:
+                plt.scatter(array[:, 0], array[:, 1], array[:, 2])
+        centroides = np.array(list(result.keys()))
+        if centroides.shape[1] == 2:
+            plt.scatter(centroides[:, 0], centroides[:, 1], marker="*", c="red")
+        else:
+            plt.scatter(centroides[:, 0], centroides[:, 1], centroides[:, 2],marker="*", c="red")
+        plt.show()
+
+
+array1 = np.array([1, 2, 3, 4, 10, 15, 20, 100, 155, 200])
+array2 = np.array([[1, 2], [7, 11], [100, 1], [200, 4], [0, 0], [27, 33]])
+array3 = np.array([[1, 2, 100], [7, 11, 94], [100, 1, 16], [200, 4, 10], [0, 0, 3], [27, 33, 0]])
+
+resultado4 = k_means(2, array1)
 print(resultado4)
+plotar(array1, resultado4)
