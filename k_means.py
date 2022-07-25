@@ -15,7 +15,7 @@ def calcula_dist(p1, p2):
         return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2 + (p1[2] - p2[2]) ** 2) ** (1 / 2)
 
 
-def k_means_2(n_clusters, data):
+def k_means(n_clusters, data):
     """
     :param n_clusters: número de clusters
     :param data: dados
@@ -85,5 +85,5 @@ def k_means_2(n_clusters, data):
 # np.array([[1, 2], [7, 11], [100, 1], [200, 4], [0, 0], [27, 33]])
 # np.array([[1, 2, 100], [7, 11, 94], [100, 1, 16], [200, 4, 10], [0, 0, 3], [27, 33, 0]])
 
-resultado4 = k_means_2(2, np.array([[1, 2, 100], [7, 11, 94], [100, 1, 16], [200, 4, 10], [0, 0, 3], [27, 33, 0]]))
+resultado4 = k_means(2, np.array([[1, 2, 100], [7, 11, 94], [100, 1, 16], [200, 4, 10], [0, 0, 3], [27, 33, 0]]))
 print(resultado4)
