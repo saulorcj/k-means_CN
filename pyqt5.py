@@ -21,12 +21,23 @@ class App(QWidget):
         self.getText()
         self.show()
     def getText(self):
+        end = False
+        list_col = []
         d1,okPressed1=QInputDialog.getText(self, "Arquivo", "Caminho")
         d2,okPressed2=QInputDialog.getInt(self, "Centroides", "Qtde:")
+        
+        while(not end):
+            d4,okPressed4=QInputDialog.getText(self, "Nova Coluna", "Nome")
+
+            if d4 == "" and okPressed4:
+                end = True
+            else:
+                list_col.append(d4)
+
         if okPressed1 and okPressed2:
             df = pd.read_csv(d1, delimiter="," )
 
-            data = df.iloc[:,[5,7]].to_numpy()
+            data = df[list_col].to_numpy()
 
             result = k_means(d2, data)
             

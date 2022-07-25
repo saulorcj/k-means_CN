@@ -103,19 +103,19 @@ def plotar(data, result):
             if array.shape[1] == 2:
                 plt.scatter(array[:, 0], array[:, 1])
             else:
-                plt.scatter(array[:, 0], array[:, 1], array[:, 2])
+                ax.scatter(array[:, 0], array[:, 1], array[:, 2])
         centroides = np.array(list(result.keys()))
         if centroides.shape[1] == 2:
-            plt.scatter(centroides[:, 0], centroides[:, 1], marker="*", c="red")
+            plt.scatter(centroides[:, 0], centroides[:, 1], marker="D",s=60, c="red")
         else:
-            plt.scatter(centroides[:, 0], centroides[:, 1], centroides[:, 2],marker="*", c="red")
+            ax.scatter(centroides[:, 0], centroides[:, 1], centroides[:, 2],marker="D", s=60, c="red")
         plt.show()
 
 
-array1 = np.array([1, 2, 3, 4, 10, 15, 20, 100, 155, 200])
-array2 = np.array([[1, 2], [7, 11], [100, 1], [200, 4], [0, 0], [27, 33]])
-array3 = np.array([[1, 2, 100], [7, 11, 94], [100, 1, 16], [200, 4, 10], [0, 0, 3], [27, 33, 0]])
+# array1 = np.array([1, 2, 3, 4, 10, 15, 20, 100, 155, 200])
+# array2 = np.array([[1, 2], [7, 11], [100, 1], [200, 4], [0, 0], [27, 33]])
+# array3 = np.array([[1, 2, 100], [7, 11, 94], [100, 1, 16], [200, 4, 10], [0, 0, 3], [27, 33, 0]])
 
-resultado4 = k_means(2, array1)
-print(resultado4)
-plotar(array1, resultado4)
+# resultado4 = k_means(2, array1)
+# print(resultado4)
+# plotar(array1, resultado4)
