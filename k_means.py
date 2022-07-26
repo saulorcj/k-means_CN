@@ -82,7 +82,7 @@ def k_means(n_clusters, data):
     return centers
 
 
-def plotar(data, result):
+def plotar(data, result, cols):
     if type(list(list(result.values())[0])[0]) == np.int64:
         plt.hlines(1, 1, max(data) + 1)
         plt.xlim(0, max(data) + 1)
@@ -95,9 +95,15 @@ def plotar(data, result):
         plt.axis('off')
         plt.show()
     else:
-        plt.figure(figsize=(12, 12))
+        # plt.figure(figsize=(12, 12))
         if data.shape[1] == 3:
             ax = plt.axes(projection='3d')
+            ax.set_xlabel(cols[0])
+            ax.set_ylabel(cols[1])
+            ax.set_zlabel(cols[2])
+        else:
+            plt.xlabel(cols[0])
+            plt.ylabel(cols[1])
         for item in result:
             array = np.array(list(result[item]))
             if array.shape[1] == 2:

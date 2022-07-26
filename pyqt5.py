@@ -41,7 +41,7 @@ class App(QWidget):
 
             result = k_means(d2, data)
             
-            plotar(data, result)
+            plotar(data, result, list_col)
 
 
 if __name__=='__main__':
